@@ -24,23 +24,23 @@ impl Freestyle {
 
 impl Mode for Freestyle {
     fn advance(&mut self, _options: &BotOptions, mv: Placement) -> Option<ModeSwitch> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.dag.advance(mv);
         None
     }
 
     fn new_piece(&mut self, _options: &BotOptions, piece: Piece) {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.dag.add_piece(piece);
     }
 
     fn suggest(&self, _options: &BotOptions) -> Vec<Placement> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.dag.suggest()
     }
 
     fn do_work(&self, options: &BotOptions) -> Statistics {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         let mut new_stats = Statistics::default();
         new_stats.selections += 1;
 
@@ -53,7 +53,7 @@ impl Mode for Freestyle {
 
             let mut moves = EnumMap::default();
             {
-                puffin::profile_scope!("movegen");
+                crate::puffin::profile_scope!("movegen");
                 for piece in next_possibilities | state.reserve {
                     moves[piece] = find_moves(&state.board, piece);
                 }
@@ -62,7 +62,7 @@ impl Mode for Freestyle {
             let mut children: EnumMap<_, Vec<_>> = EnumMap::default();
 
             {
-                puffin::profile_scope!("eval");
+                crate::puffin::profile_scope!("eval");
                 for next in next_possibilities {
                     let moves = moves[next].iter().chain(if next == state.reserve {
                         [].iter()

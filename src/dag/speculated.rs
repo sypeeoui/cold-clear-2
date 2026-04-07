@@ -39,7 +39,7 @@ impl<'bump, E: Evaluation> Layer<'bump, E> {
     }
 
     pub fn suggest(&self, state: &GameState) -> Vec<Placement> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         let node = self.states.get(state).unwrap();
         let children = match &node.children {
             Some(children) => children,
@@ -56,7 +56,7 @@ impl<'bump, E: Evaluation> Layer<'bump, E> {
     }
 
     pub fn select(&self, game_state: &GameState, exploration: f64) -> SelectResult {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         let node = self
             .states
             .get(game_state)
@@ -124,7 +124,7 @@ impl<'bump, E: Evaluation> Layer<'bump, E> {
         parent_state: GameState,
         children: EnumMap<Piece, Vec<ChildData<E>>>,
     ) -> Vec<BackpropUpdate> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         let mut childs_data = vec![];
         let mut childs_indices = [0; 8];
 
@@ -134,7 +134,7 @@ impl<'bump, E: Evaluation> Layer<'bump, E> {
         let mut parent = self.states.get_raw_mut(parent_index).unwrap();
 
         {
-            puffin::profile_scope!("create nodes");
+            crate::puffin::profile_scope!("create nodes");
             for speculation_piece in EnumSet::all() {
                 let evals = next_layer.kind.create_nodes(
                     &children[speculation_piece],
@@ -189,7 +189,7 @@ impl<'bump, E: Evaluation> Layer<'bump, E> {
         to_update: Vec<BackpropUpdate>,
         next_layer: &LayerCommon<E>,
     ) -> Vec<BackpropUpdate> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         let mut new_updates = vec![];
 
         for update in to_update {

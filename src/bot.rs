@@ -66,7 +66,7 @@ impl Bot {
     }
 
     pub fn advance(&mut self, mv: Placement) {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.current.advance(self.queue.pop_front().unwrap(), mv);
         if let Some(to) = self.mode.advance(&self.options, mv) {
             self.switch(to);
@@ -74,23 +74,23 @@ impl Bot {
     }
 
     pub fn new_piece(&mut self, piece: Piece) {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.queue.push_back(piece);
         self.mode.new_piece(&self.options, piece);
     }
 
     pub fn suggest(&self) -> Vec<Placement> {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.mode.suggest(&self.options)
     }
 
     pub fn do_work(&self) -> Statistics {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         self.mode.do_work(&self.options)
     }
 
     fn switch(&mut self, to: ModeSwitch) {
-        puffin::profile_function!();
+        crate::puffin::profile_function!();
         match to {
             ModeSwitch::Freestyle => {
                 self.mode =

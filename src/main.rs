@@ -22,7 +22,7 @@ fn main() {
     #[cfg(feature = "puffin_http")]
     let _puffin_server = match options.profile {
         true => {
-            puffin::set_scopes_on(true);
+            crate::puffin::set_scopes_on(true);
             Some(puffin_http::Server::new(&format!(
                 "0.0.0.0:{}",
                 puffin_http::DEFAULT_PORT

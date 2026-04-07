@@ -1,6 +1,27 @@
 use std::convert::Infallible;
 use std::sync::Arc;
 
+#[cfg(feature = "profiler")]
+pub mod puffin {
+    pub use puffin_crate::*;
+}
+
+#[cfg(not(feature = "profiler"))]
+pub mod puffin {
+    #[allow(unused_macros)]
+    macro_rules! profile_function { ($($arg:tt)*) => {} }
+    pub(crate) use profile_function;
+    #[allow(unused_macros)]
+    macro_rules! profile_scope { ($($arg:tt)*) => {} }
+    pub(crate) use profile_scope;
+
+    pub mod GlobalProfiler {
+        pub struct Dummy;
+        impl Dummy { pub fn new_frame(&self) {} }
+        pub fn lock() -> Dummy { Dummy }
+    }
+}
+
 use bot::{BotConfig, BotOptions};
 use enumset::EnumSet;
 use futures::prelude::*;
@@ -19,6 +40,9 @@ pub mod data;
 mod map;
 pub mod movegen;
 mod sync;
+
+#[cfg(feature = "wasm")]
+pub mod wasm;
 
 pub async fn run(
     mut incoming: impl Stream<Item = FrontendMessage> + Unpin,
